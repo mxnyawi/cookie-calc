@@ -4,26 +4,30 @@ import (
 	"log"
 )
 
-// Cookie represents a cookie data
-type Cookie struct {
-	Value string
-	Date  string
+// cookie represents a cookie data
+type cookie struct {
+	value string
+	date  string
 }
 
 // extractCookies extracts the cookies from a CSV row
-func extractCookies(data [][]string) ([]*Cookie, error) {
-	cookies := make([]*Cookie, len(data))
+func extractCookies(data [][]string) ([]*cookie, error) {
+	if len(data) == 0 {
+		return nil, ErrInvalidData
+	}
+
+	cookies := make([]*cookie, len(data))
 	for i, row := range data {
 		if len(row) >= 2 {
 			if len(row[0]) != 16 {
 				log.Printf("Invalid cookie value: %v", row[0])
 				continue
 			}
-			cookies[i] = &Cookie{Value: row[0], Date: row[1]}
+			cookies[i] = &cookie{value: row[0], date: row[1]}
 		}
 	}
 
-	if cookies[0] == nil {
+	if len(cookies) == 0 {
 		return nil, ErrInvalidData
 	}
 
@@ -53,8 +57,8 @@ func Calculate(data [][]string, date string) ([]string, error) {
 		if cookie == nil {
 			continue
 		}
-		if extractDay(cookie.Date) == date {
-			counts[cookie.Value]++
+		if extractDay(cookie.date) == date {
+			counts[cookie.value]++
 		}
 	}
 

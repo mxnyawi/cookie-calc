@@ -10,7 +10,7 @@ func TestExtractCookies(t *testing.T) {
 	tests := []struct {
 		name    string
 		data    [][]string
-		want    []*Cookie
+		want    []*cookie
 		wantErr bool
 	}{
 		{
@@ -19,9 +19,9 @@ func TestExtractCookies(t *testing.T) {
 				{"AtY0laUfhglK3lC7", "2018-12-09T14:19:00+00:00"},
 				{"SAZuXPGUrfbcn5UA", "2018-12-09T10:13:00+00:00"},
 			},
-			want: []*Cookie{
-				{Value: "AtY0laUfhglK3lC7", Date: "2018-12-09T14:19:00+00:00"},
-				{Value: "SAZuXPGUrfbcn5UA", Date: "2018-12-09T10:13:00+00:00"},
+			want: []*cookie{
+				{value: "AtY0laUfhglK3lC7", date: "2018-12-09T14:19:00+00:00"},
+				{value: "SAZuXPGUrfbcn5UA", date: "2018-12-09T10:13:00+00:00"},
 			},
 			wantErr: false,
 		},
@@ -31,8 +31,8 @@ func TestExtractCookies(t *testing.T) {
 				{"AtY0laUfhglK3lC7", "2018-12-09T14:19:00+00:00"},
 				{"invalid", "2018-12-09T10:13:00+00:00"},
 			},
-			want: []*Cookie{
-				{Value: "AtY0laUfhglK3lC7", Date: "2018-12-09T14:19:00+00:00"},
+			want: []*cookie{
+				{value: "AtY0laUfhglK3lC7", date: "2018-12-09T14:19:00+00:00"},
 				nil,
 			},
 			wantErr: false,
@@ -43,8 +43,8 @@ func TestExtractCookies(t *testing.T) {
 				{"AtY0laUfhglK3lC7", "2018-12-09T14:19:00+00:00"},
 				{"SAZuXPGUrfbcn5UA"},
 			},
-			want: []*Cookie{
-				{Value: "AtY0laUfhglK3lC7", Date: "2018-12-09T14:19:00+00:00"},
+			want: []*cookie{
+				{value: "AtY0laUfhglK3lC7", date: "2018-12-09T14:19:00+00:00"},
 				nil,
 			},
 			wantErr: false,
