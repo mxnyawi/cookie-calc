@@ -1,6 +1,8 @@
 package calculator
 
-import "log"
+import (
+	"log"
+)
 
 // Cookie represents a cookie data
 type Cookie struct {
@@ -8,8 +10,8 @@ type Cookie struct {
 	Date  string
 }
 
-// ExtractCookies extracts the cookies from a CSV row
-func ExtractCookies(data [][]string) ([]*Cookie, error) {
+// extractCookies extracts the cookies from a CSV row
+func extractCookies(data [][]string) ([]*Cookie, error) {
 	cookies := make([]*Cookie, len(data))
 	for i, row := range data {
 		if len(row) >= 2 {
@@ -21,15 +23,15 @@ func ExtractCookies(data [][]string) ([]*Cookie, error) {
 		}
 	}
 
-	if len(cookies) == 0 {
+	if cookies[0] == nil {
 		return nil, ErrInvalidData
 	}
 
 	return cookies, nil
 }
 
-// ExtractDay extracts the day from a date string
-func ExtractDay(date string) string {
+// extractDay extracts the day from a date string
+func extractDay(date string) string {
 	if len(date) < 10 {
 		return ""
 	}
@@ -38,14 +40,20 @@ func ExtractDay(date string) string {
 }
 
 // Calculate calculates the most active cookies on a given date
-func Calculate(cookies []*Cookie, date string) ([]string, error) {
+func Calculate(data [][]string, date string) ([]string, error) {
+	// Extract the cookies from the CSV data
+	cookies, err := extractCookies(data)
+	if err != nil {
+		return nil, err
+	}
+
 	// Create a map to count the occurrences of each cookie on the given date
 	counts := make(map[string]int)
 	for _, cookie := range cookies {
 		if cookie == nil {
 			continue
 		}
-		if ExtractDay(cookie.Date) == date {
+		if extractDay(cookie.Date) == date {
 			counts[cookie.Value]++
 		}
 	}

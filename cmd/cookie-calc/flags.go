@@ -2,10 +2,10 @@ package main
 
 import (
 	"flag"
-	"fmt"
-	"os"
+	"log"
 )
 
+// Flags represents the command line flags
 type Flags struct {
 	Filepath string
 	Date     string
@@ -19,17 +19,11 @@ func ParseFlags() Flags {
 	flag.Parse()
 
 	if *filepath == "" || *date == "" {
-		fmt.Println("Please provide both -f and -d flags.")
-		os.Exit(1)
+		log.Fatalln("Please provide both -f and -d flags.")
 	}
 
 	return Flags{
 		Filepath: *filepath,
 		Date:     *date,
 	}
-}
-
-func Verify() {
-	flags := ParseFlags()
-	fmt.Println(flags)
 }

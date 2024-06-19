@@ -59,7 +59,7 @@ func TestExtractCookies(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := ExtractCookies(tt.data)
+			got, err := extractCookies(tt.data)
 			if tt.wantErr {
 				require.Error(t, err)
 				return
@@ -90,7 +90,7 @@ func TestExtractDay(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := ExtractDay(tt.date)
+			result := extractDay(tt.date)
 			require.Equal(t, tt.expected, result)
 		})
 	}
@@ -99,57 +99,65 @@ func TestExtractDay(t *testing.T) {
 func TestCalculate(t *testing.T) {
 	tests := []struct {
 		name    string
-		cookies []*Cookie
+		cookies [][]string
 		date    string
 		want    []string
-		wantErr bool
+		wantErr error
 	}{
 		{
 			name: "Single cookie on given date",
-			cookies: []*Cookie{
-				{Value: "cookie1", Date: "2022-01-01T00:00:00Z"},
+			cookies: [][]string{
+				{"SAZuXPGUrfbcn5UA", "2022-01-01T00:00:00Z"},
 			},
 			date: "2022-01-01",
-			want: []string{"cookie1"},
+			want: []string{"SAZuXPGUrfbcn5UA"},
 		},
 		{
 			name: "Multiple cookies on given date",
-			cookies: []*Cookie{
-				{Value: "cookie1", Date: "2022-01-01T00:00:00Z"},
-				{Value: "cookie2", Date: "2022-01-01T00:00:00Z"},
-				{Value: "cookie1", Date: "2022-01-01T00:00:00Z"},
+			cookies: [][]string{
+				{"SAZuXPGUrfbcn5UA", "2022-01-01T00:00:00Z"},
+				{"5UAVanZf6UtGyKVS", "2022-01-01T00:00:00Z"},
+				{"SAZuXPGUrfbcn5UA", "2022-01-01T00:00:00Z"},
 			},
 			date: "2022-01-01",
-			want: []string{"cookie1"},
+			want: []string{"SAZuXPGUrfbcn5UA"},
 		},
 		{
 			name: "No cookies on given date",
-			cookies: []*Cookie{
-				{Value: "cookie1", Date: "2022-01-02T00:00:00Z"},
+			cookies: [][]string{
+				{"SAZuXPGUrfbcn5UA", "2022-01-02T00:00:00Z"},
 			},
 			date:    "2022-01-01",
-			wantErr: true,
+			wantErr: ErrNoCookies,
+		},
+		{
+			name: "Invalid data",
+			cookies: [][]string{
+				{"cookies", "2022-01-01T00:00:00Z"},
+			},
+			date:    "2022-01-01",
+			wantErr: ErrInvalidData,
 		},
 		{
 			name: "Multiple cookies with same count on given date",
-			cookies: []*Cookie{
-				{Value: "cookie1", Date: "2022-01-01T00:00:00Z"},
-				{Value: "cookie2", Date: "2022-01-01T00:00:00Z"},
+			cookies: [][]string{
+				{"SAZuXPGUrfbcn5UA", "2022-01-01T00:00:00Z"},
+				{"5UAVanZf6UtGyKVS", "2022-01-01T00:00:00Z"},
 			},
 			date: "2022-01-01",
-			want: []string{"cookie1", "cookie2"},
+			want: []string{"SAZuXPGUrfbcn5UA", "5UAVanZf6UtGyKVS"},
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := Calculate(tt.cookies, tt.date)
-			if tt.wantErr {
-				require.Equal(t, ErrNoCookies, err)
+			if tt.wantErr != nil {
+				require.Equal(t, tt.wantErr, err)
 				return
 			}
 			require.NoError(t, err)
-			require.ElementsMatch(t, tt.want, got)
+			require.Equal(t, tt.want, got)
 		})
 	}
 }

@@ -17,13 +17,7 @@ func main() {
 		return
 	}
 
-	cookies, err := calculator.ExtractCookies(data)
-	if err != nil {
-		log.Fatalf("Error extracting cookies: %v", err)
-		return
-	}
-
-	result, err := calculator.Calculate(cookies, flags.Date)
+	result, err := calculator.Calculate(data, flags.Date)
 	switch {
 	case err == calculator.ErrInvalidData:
 		log.Println("Invalid data found in the CSV file")

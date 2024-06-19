@@ -6,6 +6,7 @@ import (
 	"os"
 )
 
+// ReadCSV reads a CSV file and returns the data as a slice of slices of strings
 func ReadCSV(filePath string) ([][]string, error) {
 	file, err := os.Open(filePath)
 	if err != nil {

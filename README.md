@@ -49,7 +49,7 @@ SAZuXPGUrfbcn5UA
 
 ## Testing
 
-To run the tests, navigate to the cmd/cookie-calc directory and run:
+To run the tests, run:
 
 ```bash
 cd /pkg/calculator
