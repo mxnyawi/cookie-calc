@@ -1,9 +1,5 @@
 package calculator
 
-import (
-	"log"
-)
-
 // cookie represents a cookie data
 type cookie struct {
 	value string
@@ -20,7 +16,6 @@ func extractCookies(data [][]string) ([]*cookie, error) {
 	for i, row := range data {
 		if len(row) >= 2 {
 			if len(row[0]) != 16 {
-				log.Printf("Invalid cookie value: %v", row[0])
 				continue
 			}
 			cookies[i] = &cookie{value: row[0], date: row[1]}

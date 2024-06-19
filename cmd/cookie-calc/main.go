@@ -9,7 +9,6 @@ import (
 
 func main() {
 	flags := ParseFlags()
-	log.Printf("Calculating most frequent cookies for %v on date %v\n", flags.Filepath, flags.Date)
 
 	data, err := csvreader.ReadCSV(flags.Filepath)
 	if err != nil {
