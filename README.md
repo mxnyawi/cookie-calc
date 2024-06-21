@@ -17,13 +17,19 @@ cd cookie-calc/cmd/cookie-calc
 
 ## Usage
 
-To run the program, use the go run command followed by a -f flag to specify the CSV file and a -d flag to specify the date. For example:
+To run the program, use the go run command followed by a -f flag to specify the CSV file, a -d flag to specify the date, and optionally a -log flag to enable logging. For example:
 
 ```bash
-./cookie-calc -f .\cookie_log.csv -d 2018-12-08
+./cookie-calc -f .\cookie_log.csv -d 2018-12-08 -log
 ```
 
-This command will calculate the most frequently occurring cookies in the cookie_log.csv file for the date 2018-12-08.
+This command will calculate the most frequently occurring cookies in the cookie_log.csv file for the date 2018-12-08 and enable logging. When logging is enabled with the `-log` flag, a log file named `cookie_calc.log` will be created in the `cmd/cookie-calc` directory.
+
+You can also use the `-h` flag to display help information about the command usage:
+
+```bash
+./cookie-calc -h
+```
 
 ## CSV File Format
 
@@ -46,6 +52,8 @@ The program outputs the cookie(s) that were accessed the most on the specified d
 AtY0laUfhglK3lC7
 SAZuXPGUrfbcn5UA
 ```
+
+If the `-log` flag is used, detailed execution logs will be written to `cookie_calc.log` in the `cmd/cookie-calc` directory.
 
 ## Testing
 

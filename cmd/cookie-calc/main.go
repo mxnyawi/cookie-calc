@@ -1,32 +1,41 @@
 package main
 
 import (
-	"log"
-
 	"github.com/mxnyawi/cache-calc/api/csvreader"
+	"github.com/mxnyawi/cache-calc/logger"
 	"github.com/mxnyawi/cache-calc/pkg/calculator"
 )
 
 func main() {
+	stdOut := logger.StdOut()
 	flags := ParseFlags()
 
-	data, err := csvreader.ReadCSV(flags.Filepath)
+	var Logger logger.LoggerInterface
+	if flags.LoggingEnabled {
+		Logger = logger.SetupLogger()
+		defer Logger.Close()
+		Logger.Info("Application started")
+	} else {
+		Logger = logger.NewNoOpLogger()
+	}
+
+	data, err := csvreader.ReadCSV(Logger, flags.Filepath)
 	if err != nil {
-		log.Fatalf("Error reading CSV file: %v", err)
+		stdOut.Fatalf("Error reading CSV file: %v", err)
 		return
 	}
 
-	result, err := calculator.Calculate(data, flags.Date)
+	result, err := calculator.Calculate(Logger, data, flags.Date)
 	switch {
 	case err == calculator.ErrInvalidData:
-		log.Println("Invalid data found in the CSV file")
+		stdOut.Fatalf("Invalid data found in the CSV file")
 	case err == calculator.ErrNoCookies:
-		log.Printf("No cookies found for %v", flags.Date)
+		stdOut.Fatalf("No cookies found for %v", flags.Date)
 	case err != nil:
-		log.Fatalf("Error calculating most frequent cookies: %v", err)
+		stdOut.Fatalf("Error calculating most frequent cookies: %v", err)
 	default:
 		for _, cookie := range result {
-			log.Println(cookie)
+			stdOut.Println(cookie)
 		}
 	}
 }

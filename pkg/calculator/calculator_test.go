@@ -3,10 +3,13 @@ package calculator
 import (
 	"testing"
 
+	"github.com/mxnyawi/cache-calc/logger/mocks"
+	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
 
 func TestExtractCookies(t *testing.T) {
+	mockLogger := new(mocks.MockLoggerInterface)
 	tests := []struct {
 		name    string
 		data    [][]string
@@ -59,7 +62,12 @@ func TestExtractCookies(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := extractCookies(tt.data)
+			mockLogger.On("Info", mock.Anything, mock.Anything).Maybe()
+			mockLogger.On("Error", mock.Anything, mock.Anything).Maybe()
+
+			got, err := extractCookies(mockLogger, tt.data)
+
+			mockLogger.AssertExpectations(t)
 			if tt.wantErr {
 				require.Error(t, err)
 				return
@@ -97,6 +105,7 @@ func TestExtractDay(t *testing.T) {
 }
 
 func TestCalculate(t *testing.T) {
+	mockLogger := new(mocks.MockLoggerInterface)
 	tests := []struct {
 		name    string
 		cookies [][]string
@@ -151,7 +160,13 @@ func TestCalculate(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := Calculate(tt.cookies, tt.date)
+			mockLogger.On("Info", mock.Anything, mock.Anything).Maybe()
+			mockLogger.On("Error", mock.Anything, mock.Anything).Maybe()
+
+			got, err := Calculate(mockLogger, tt.cookies, tt.date)
+
+			mockLogger.AssertExpectations(t)
+
 			if tt.wantErr != nil {
 				require.Equal(t, tt.wantErr, err)
 				return
