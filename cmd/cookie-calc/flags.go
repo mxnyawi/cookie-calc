@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"regexp"
 )
 
 // Flags represents the command line flags
@@ -37,6 +38,11 @@ func ParseFlags() Flags {
 
 	if *filepath == "" || *date == "" {
 		log.Fatalln("Please provide both -f and -d flags.")
+	}
+
+	matched, err := regexp.MatchString(`^\d{4}-\d{2}-\d{2}$`, *date)
+	if err != nil || !matched {
+		log.Fatalln("Please provide a valid date in the form of YYYY-MM-DD.")
 	}
 
 	return Flags{
