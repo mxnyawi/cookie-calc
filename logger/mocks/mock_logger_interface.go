@@ -19,11 +19,6 @@ func (m *MockLoggerInterface) Error(msg string, args ...interface{}) {
 	m.Called(args...)
 }
 
-// Fatal mocks the Fatal method of LoggerInterface
-func (m *MockLoggerInterface) Fatal(msg string, args ...interface{}) {
-	m.Called(args...)
-}
-
 // Close mocks the Close method of LoggerInterface
 func (m *MockLoggerInterface) Close() {
 	m.Called()
