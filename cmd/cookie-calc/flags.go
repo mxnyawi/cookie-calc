@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"regexp"
+	"strconv"
 )
 
 // Flags represents the command line flags
@@ -40,14 +41,28 @@ func ParseFlags() Flags {
 		log.Fatalln("Please provide both -f and -d flags.")
 	}
 
-	matched, err := regexp.MatchString(`^\d{4}-\d{2}-\d{2}$`, *date)
-	if err != nil || !matched {
-		log.Fatalln("Please provide a valid date in the form of YYYY-MM-DD.")
-	}
+	DateValidation(*date)
 
 	return Flags{
 		Filepath:       *filepath,
 		Date:           *date,
 		LoggingEnabled: *loggingEnabled,
+	}
+}
+
+func DateValidation(date string) {
+	re := regexp.MustCompile(`^(\d{4})-(\d{2})-(\d{2})$`)
+	matches := re.FindStringSubmatch(date)
+
+	if matches == nil {
+		log.Fatalln("Please provide a valid date in the form of YYYY-MM-DD.")
+	} else {
+		_, err1 := strconv.Atoi(matches[1])
+		month, err2 := strconv.Atoi(matches[2])
+		day, err3 := strconv.Atoi(matches[3])
+
+		if err1 != nil || err2 != nil || err3 != nil || month > 12 || day > 30 {
+			log.Fatalln("Please provide a valid date with month <= 12 and day <= 30.")
+		}
 	}
 }
